@@ -23,7 +23,7 @@ class PlantUMLDiagram(BaseDiagram):
         ]
 
         charset = self.proc.CHARSET
-        if(charset):
+        if charset:
             print('using charset: ' + charset)
             command.append("-charset")
             command.append(charset)
@@ -47,12 +47,12 @@ class PlantUMLProcessor(BaseProcessor):
         self.check_dependencies()
         self.find_plantuml_jar()
 
-        if(self.CHECK_ON_STARTUP):
+        if self.CHECK_ON_STARTUP:
             self.check_plantuml_version()
             self.check_plantuml_functionality()
 
     def check_dependencies(self):
-        if(platform in ("win32",)):
+        if platform in ("win32",):
             # FIXME: What's a good way to detect if Java is installed on Windows?
             print("Well... Let's pretend Java is installed, for now.")
         else:
@@ -120,7 +120,7 @@ class PlantUMLProcessor(BaseProcessor):
     def extract_blocks(self, view):
 		# If any Region is selected - trying to convert it, otherwise converting all @start-@end blocks in view
         sel = view.sel()
-        if(sel[0].a == sel[0].b):
+        if sel[0].a == sel[0].b:
             pairs = (
                     (start, view.find('@end', start.begin()),)
                     for start in view.find_all('@start')
