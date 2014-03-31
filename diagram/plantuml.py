@@ -4,7 +4,7 @@ from .base import BaseProcessor
 from subprocess import Popen as execute, PIPE, STDOUT, check_call
 from os.path import abspath, dirname, exists, join
 from tempfile import NamedTemporaryFile
-from sys import platform
+from platform import system
 
 
 class PlantUMLDiagram(BaseDiagram):
@@ -52,7 +52,7 @@ class PlantUMLProcessor(BaseProcessor):
             self.check_plantuml_functionality()
 
     def check_dependencies(self):
-        if platform in ("win32",):
+        if system() == 'Windows':
             # FIXME: What's a good way to detect if Java is installed on Windows?
             print("Well... Let's pretend Java is installed, for now.")
         else:
