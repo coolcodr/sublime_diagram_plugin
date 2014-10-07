@@ -4,33 +4,45 @@ from .base import BaseProcessor
 from subprocess import Popen as execute, PIPE, STDOUT, check_call
 from os.path import abspath, dirname, exists, join
 from tempfile import NamedTemporaryFile
+import hashlib
+import os
 
 
 class PlantUMLDiagram(BaseDiagram):
     def __init__(self, processor, sourceFile, text):
         super(PlantUMLDiagram, self).__init__(processor, sourceFile, text)
-        self.file = NamedTemporaryFile(prefix=sourceFile, suffix='.png', delete=False)
+        digest = hashlib.md5(sourceFile.encode('UTF-8')).hexdigest()[:5]
+        self.target = ''.join([sourceFile, digest, '.png'])
+
+    def execute_plantuml(self):
+        with NamedTemporaryFile(delete=False) as temp:
+            puml = execute(
+                [
+                    'java',
+                    '-jar',
+                    self.proc.plantuml_jar_path,
+                    '-pipe',
+                    '-tpng',
+                    '-charset',
+                    'UTF-8'
+                ],
+                stdin=PIPE,
+                stdout=temp)
+            puml.communicate(input=self.text.encode('UTF-8'))
+            if puml.returncode != 0:
+                return None
+            else:
+                return temp.name
 
     def generate(self):
-        puml = execute(
-            [
-                'java',
-                '-jar',
-                self.proc.plantuml_jar_path,
-                '-pipe',
-                '-tpng',
-                '-charset',
-                'UTF-8'
-            ],
-            stdin=PIPE,
-            stdout=self.file)
-        puml.communicate(input=self.text.encode('UTF-8'))
-        if puml.returncode != 0:
+        result = self.execute_plantuml()
+        if not result:
             print("Error Processing Diagram:")
             print(self.text)
             return
         else:
-            return self.file
+            os.rename(result, self.target)
+            return self.target
 
 
 class PlantUMLProcessor(BaseProcessor):
