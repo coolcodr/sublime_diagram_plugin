@@ -10,5 +10,5 @@ class EyeOfGnomeViewer(BaseViewer):
 
     def view(self, diagram_files):
         displaycmd = ['eog']
-        displaycmd.extend(diagram_file.name for diagram_file in diagram_files)
+        displaycmd.extend(diagram_files)
         run_command(displaycmd).wait()

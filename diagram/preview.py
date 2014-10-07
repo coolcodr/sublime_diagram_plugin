@@ -12,5 +12,5 @@ class PreviewViewer(BaseViewer):
 
     def view(self, diagram_files):
         displaycmd = ['open', '-a', 'Preview']
-        displaycmd.extend(diagram_file.name for diagram_file in diagram_files)
+        displaycmd.extend(diagram_files)
         run_command(displaycmd).wait()
