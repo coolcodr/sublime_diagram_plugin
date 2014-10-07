@@ -3,6 +3,7 @@ from .plantuml import PlantUMLProcessor
 from .quicklook import QuickLookViewer
 from .preview import PreviewViewer
 from .eog import EyeOfGnomeViewer
+from .no_viewer import NoViewer
 from .freedesktop_default import FreedesktopDefaultViewer
 from threading import Thread
 from os.path import splitext
@@ -11,7 +12,7 @@ import sys
 
 INITIALIZED = False
 AVAILABLE_PROCESSORS = [PlantUMLProcessor]
-AVAILABLE_VIEWERS = [QuickLookViewer, EyeOfGnomeViewer, PreviewViewer, FreedesktopDefaultViewer]
+AVAILABLE_VIEWERS = [QuickLookViewer, EyeOfGnomeViewer, PreviewViewer, FreedesktopDefaultViewer, NoViewer]
 ACTIVE_PROCESSORS = []
 ACTIVE_VIEWER = None
 
@@ -116,7 +117,7 @@ def render_and_view(sourceFile, diagrams):
         diagram_files.extend(processor.process(sourceFile,blocks))
 
     if diagram_files:
-        print("%r viewing %r" % (ACTIVE_VIEWER, [d for d in diagram_files]))
+        print("%r viewing %r" % (ACTIVE_VIEWER, diagram_files))
         ACTIVE_VIEWER.view(diagram_files)
     else:
         error_message("No diagrams generated...")
